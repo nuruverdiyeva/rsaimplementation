@@ -41,8 +41,7 @@ li = [num for num in range(2,1000) if num % 2 !=0]
 def is_prime(num) :    
     while True : 
         num = random.getrandbits(1000)
-        for i in li :
-            if num % 2 == 0 or num % i == 0 :
+        if any(num % i == 0 for i in li) :
                 continue  
         if Miller(num) :
             return num
@@ -87,29 +86,42 @@ def main() :
         for line in f :
             for i in line :
                 li.append(ord(i))
-    code = sum(li)
-    
+
     with open('message.txt','w') as ff :
-        En = Encryption(code)
-        ff.write(str(En))
+        print()
+    with open('message.txt','a') as ff :
+        for i in li :
+            En = Encryption(i)
+            print(En,file=ff)
+            
     print()
     print('your message encrypted successfully')
     print()
     inp = int(input("Enter number 1 to decrypt your message by 'Fast modular exponentiation' or 2 by 'Chinese remainder theorem' : "))
+ 
+    li2 = []
+    with open('message.txt','r') as ff :
+            if inp == 1 :
+                for line in ff :
+                    r2 = Decryption_M(int(line))
+                    li2.append(r2)
 
-    with open('message.txt','w') as ff :
-        if inp == 1 :
-            result2 = Decryption_M(En)            
-            if result2 == code :
-                with open('message.txt','a') as fff :
-                    for i in li :
-                        print(chr(i),end='',file=fff)
-        if inp == 2 :
-            result2 = Decryption_C(En)        
-            if result2 == code :
-                with open('message.txt','a') as fff :
-                    for i in li :
-                        print(chr(i),end='',file=fff)
+                with open('message.txt','w') as ff :
+                    print()
+                with open('message.txt','a') as ff :
+                        for i in li2 :
+                            print(chr(i),end='',file=ff)
+
+            if inp == 2 :
+                for line in ff :
+                    r2 = Decryption_C(int(line))
+                    li2.append(r2)
+                    
+                with open('message.txt','w') as ff :
+                    print()
+                with open('message.txt','a') as ff :
+                        for i in li2 :
+                            print(chr(i),end='',file=ff)    
 
     print()
     print('your message decrypted successfully')
